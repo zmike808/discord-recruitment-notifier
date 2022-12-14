@@ -1,4 +1,4 @@
-package com.masterkenth;
+package com.commitorquit;
 
 public class ItemData
 {

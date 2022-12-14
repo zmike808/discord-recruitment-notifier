@@ -25,20 +25,58 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.masterkenth.discord;
+package com.commitorquit;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
-@NoArgsConstructor
-public class Webhook extends Object
+@ConfigGroup("discordrecruitment")
+public interface DiscordRecruitmentConfig extends Config
 {
-	@Getter
-	@Setter
-	private Embed[] embeds;
+	@ConfigSection(
+		position = 1,
+		name = "Webhook Options",
+		description = "Manage how the plugin sends drops to your discord server"
+	)
+	String webhookOptionsSection = "webhookOptionsSection";
 
-	@Getter
-	@Setter
-	private String content;
+
+	@ConfigItem(
+		keyName = "webhookurl",
+		name = "Discord webhook URL(s)",
+		description = "The Discord Webhook URL to use",
+		section = webhookOptionsSection,
+		position = 1
+	)
+	default String webhookUrl()
+	{
+		return "";
+	}
+
+
+	@ConfigItem(
+			keyName = "sendscreenshot",
+			name = "Send screenshot",
+			description = "Whether to send a screenshot along with the message",
+			section = webhookOptionsSection,
+			position = 4
+	)
+	default boolean sendScreenshot()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "sendEmbeddedMessage",
+			name = "Send embedded message",
+			description = "Whether to send a embedded Discord message",
+			section = webhookOptionsSection,
+			position = 2
+	)
+	default boolean sendEmbeddedMessage()
+	{
+		return true;
+	}
 }

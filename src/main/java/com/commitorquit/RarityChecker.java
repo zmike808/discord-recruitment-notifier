@@ -25,18 +25,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.masterkenth;
+package com.commitorquit;
 
-import java.util.*;
+import com.commitorquit.models.Npc;
+import com.commitorquit.models.NpcItem;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import com.masterkenth.models.Npc;
-import com.masterkenth.models.NpcItem;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemComposition;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.ItemVariationMapping;
-import org.json.JSONObject;
 
 @Slf4j
 public class RarityChecker

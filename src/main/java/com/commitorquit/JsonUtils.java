@@ -1,14 +1,12 @@
-package com.masterkenth;
+package com.commitorquit;
 
+import com.commitorquit.models.Npc;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.masterkenth.models.Npc;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,8 +28,8 @@ public class JsonUtils
 	public JsonUtils()
 	{
 		try(InputStreamReader reader = new InputStreamReader(
-				Objects.requireNonNull(DiscordRareDropNotificaterPlugin.class.getResourceAsStream("/monster-drops.json")),
-				StandardCharsets.UTF_8)) {
+			Objects.requireNonNull(DiscordRecruitmentPlugin.class.getResourceAsStream("/monster-drops.json")),
+			StandardCharsets.UTF_8)) {
 			npcList = new Gson().fromJson(reader, new TypeToken<List<Npc>>() {}.getType());
 		}
 		catch (Exception e)

@@ -1,8 +1,7 @@
-package com.masterkenth.models;
+package com.commitorquit.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class Npc {
