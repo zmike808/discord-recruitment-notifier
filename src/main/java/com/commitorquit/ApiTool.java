@@ -27,11 +27,9 @@
  */
 package com.commitorquit;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import net.runelite.client.RuneLite;
-import okhttp3.Cache;
+import javax.inject.Inject;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -45,17 +43,19 @@ import okhttp3.ResponseBody;
 public class ApiTool
 {
 	private static ApiTool _instance;
+	@Inject
+	private OkHttpClient httpClient;
 
-	private OkHttpClient httpClient = null;
+
+	public ApiTool()
+	{
+	}
 
 	public static ApiTool getInstance()
 	{
 		if (_instance == null)
 		{
 			_instance = new ApiTool();
-			_instance.httpClient = new OkHttpClient.Builder()
-				.cache(new Cache(new File(RuneLite.CACHE_DIR, "okhttp_drdn"), 20 * 1024 * 1024)) // 20mb cache
-				.build();
 		}
 		return _instance;
 	}

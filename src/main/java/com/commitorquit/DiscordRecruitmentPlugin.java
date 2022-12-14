@@ -471,8 +471,9 @@ public class DiscordRecruitmentPlugin extends Plugin
 		String jsonStr = json.toString();
 
 		List<Throwable> exceptions = new ArrayList<>();
+		ApiTool apiTool = new ApiTool();
 		List<CompletableFuture<Void>> sends = webhookUrls.stream()
-			.map(url -> ApiTool.getInstance().postRaw(url, jsonStr, "application/json").handle((_v, e) ->
+			.map(url -> apiTool.postRaw(url, jsonStr, "application/json").handle((_v, e) ->
 			{
 				if (e != null)
 				{
@@ -505,9 +506,10 @@ public class DiscordRecruitmentPlugin extends Plugin
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write((BufferedImage) screenshot, "png", baos);
 			byte[] imageBytes = baos.toByteArray();
+			ApiTool apiTool = new ApiTool();
 			for (String url : webhookUrls)
 			{
-				ApiTool.getInstance().postFormImage(url, imageBytes, "image/png").get();
+				apiTool.postFormImage(url, imageBytes, "image/png").get();
 			}
 
 		}
