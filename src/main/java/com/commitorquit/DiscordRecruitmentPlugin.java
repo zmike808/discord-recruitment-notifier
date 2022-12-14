@@ -85,7 +85,7 @@ public class DiscordRecruitmentPlugin extends Plugin
 	@Inject
 	private DrawManager drawManager;
 
-	private final RarityChecker rarityChecker = new RarityChecker();
+//	private final RarityChecker rarityChecker = new RarityChecker();
 
 	private CompletableFuture<java.awt.Image> queuedScreenshot = null;
 
