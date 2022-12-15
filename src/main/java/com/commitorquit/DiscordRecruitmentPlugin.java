@@ -32,9 +32,10 @@ import com.commitorquit.discord.Embed;
 import com.commitorquit.discord.Field;
 import com.commitorquit.discord.Webhook;
 import com.google.inject.Provides;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +56,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.DrawManager;
 import net.runelite.client.util.Text;
+import okhttp3.OkHttpClient;
 import org.json.JSONObject;
 
 @Slf4j
@@ -70,6 +72,8 @@ public class DiscordRecruitmentPlugin extends Plugin
 //		"You have a funny feeling like you're being followed", "You feel something weird sneaking into your backpack",
 //		"You have a funny feeling like you would have been followed", PET_MESSAGE_DUPLICATE);
 
+	@Inject
+	private OkHttpClient httpClient;
 	@Inject
 	private Client client;
 
@@ -95,10 +99,12 @@ public class DiscordRecruitmentPlugin extends Plugin
 		return configManager.getConfig(DiscordRecruitmentConfig.class);
 	}
 
+	private ApiTool apiTool;
 	@Override
 	protected void startUp() throws Exception
 	{
 //		JsonUtils.getInstance();
+		apiTool = new ApiTool(httpClient);
 		super.startUp();
 	}
 
@@ -110,6 +116,7 @@ public class DiscordRecruitmentPlugin extends Plugin
 		{
 			return;
 		}
+//		sendScreenshot(getScreenshot().get());
 		String msg = event.getMessage();
 //		msg = Text.standardize(event.getMessage());//remove color
 		msg = Text.removeTags(msg).replace('\u00A0', ' ').trim();
@@ -122,8 +129,7 @@ public class DiscordRecruitmentPlugin extends Plugin
 			String[] splitted = tosplit.split(":");
 			invited = Text.toJagexName(splitted[0]);
 			recruiter = Text.toJagexName(splitted[1]);
-
-			log.info("recruitment message: " + msg);
+			log.error(Arrays.toString(recruiter.split(".")));
 			log.info("splitted: " + invited + " " + recruiter);
 
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "clan recruitment plugin", msg + " event type: " + event.getType(), null);
@@ -133,21 +139,20 @@ public class DiscordRecruitmentPlugin extends Plugin
 		{
 			invited = null;
 			recruiter = null;
+			return;
+//			sendScreenshot(getScreenshot().get());
 		}
 		log.error("invited: " + invited + " recruiter: " + recruiter);
-		if (invited == null || recruiter == null)
-		{
-			return;
-		}
+
 		// onlynotify for your own recruitments
 //		if(recruiter != getPlayerName()) {
 //			return;
 //		}
-		Image screenshot = getScreenshot().get();
-		log.warn(screenshot.toString());
-		sendWebhookData(getWebhookUrls(), createRecruitmentNotification(msg)).get();
-		queueScreenshot();
-		sendScreenshot(getWebhookUrls(), queuedScreenshot.get());
+//		Image screenshot = getScreenshot().get();
+//		log.warn(screenshot.toString());
+		sendWebhookData(getWebhookUrls(), createRecruitmentNotification(msg, recruiter, invited)).get();
+//		queueScreenshot();
+//		sendScreenshot(getScreenshot().get());
 	}
 //			.exceptionally(e ->
 //			{
@@ -396,22 +401,35 @@ public class DiscordRecruitmentPlugin extends Plugin
 //			return sendWebhookData(getWebhookUrls(), webhookData);
 //		});
 //	}
-	private Webhook createRecruitmentNotification(String msg)
+	private Webhook createRecruitmentNotification(String msg, String recruiter_name, String invited_name)
 	{
 		Author author = new Author();
-		author.setName(getPlayerName());
+		author.setName(recruiter_name);
 
 
 		/*
 		 * Field rarityField = new Field(); rarityField.setName("Rarity");
 		 * rarityField.setValue(getRarityString(rarity)); rarityField.setInline(true);
 		 */
-
 		Embed embed = new Embed();
 		embed.setAuthor(author);
-		embed.setFields(new Field[]{ /* rarityField */});
-		embed.setDescription(msg);
+		Field recruiter = new Field();
+		recruiter.setName("Recruiter");
+		recruiter.setValue(recruiter_name);
+		recruiter.setInline(false);
+		Field invited = new Field();
+		invited.setName("Invited/Joined");
+		invited.setValue(invited_name);
+		invited.setInline(false);
+		Field date = new Field();
+		date.setName("Date");
+		date.setInline(true);
+		DateTimeFormatter dtf = DateTimeFormatter.RFC_1123_DATE_TIME;
+		Instant t = Instant.now();
+		date.setValue(dtf.format(t));
 
+		embed.setFields(new Field[]{recruiter, invited, date});
+		embed.setDescription(msg);
 		/*
 		 * Image thumbnail = new Image(); CompletableFuture<Void> iconFuture =
 		 * ApiTool.getInstance().getIconUrl("pet", -1, petName).thenAccept(iconUrl -> {
@@ -421,6 +439,31 @@ public class DiscordRecruitmentPlugin extends Plugin
 		webhookData.setEmbeds(new Embed[]{embed});
 		return webhookData;
 	}
+//	private Webhook createRecruitmentNotification(String msg)
+//	{
+//		Author author = new Author();
+//		author.setName(getPlayerName());
+//
+//
+//		/*
+//		 * Field rarityField = new Field(); rarityField.setName("Rarity");
+//		 * rarityField.setValue(getRarityString(rarity)); rarityField.setInline(true);
+//		 */
+//
+//		Embed embed = new Embed();
+//		embed.setAuthor(author);
+//		embed.setFields(new Field[]{ /* rarityField */});
+//		embed.setDescription(msg);
+//
+//		/*
+//		 * Image thumbnail = new Image(); CompletableFuture<Void> iconFuture =
+//		 * ApiTool.getInstance().getIconUrl("pet", -1, petName).thenAccept(iconUrl -> {
+//		 * thumbnail.setUrl(iconUrl); embed.setThumbnail(thumbnail); });
+//		 */
+//		Webhook webhookData = new Webhook();
+//		webhookData.setEmbeds(new Embed[]{embed});
+//		return webhookData;
+//	}
 
 //	private CompletableFuture<Void> queueRecruitmentNotification(String msg)
 //	{
@@ -457,6 +500,7 @@ public class DiscordRecruitmentPlugin extends Plugin
 
 	private CompletableFuture<java.awt.Image> getScreenshot()
 	{
+
 		CompletableFuture<java.awt.Image> f = new CompletableFuture<>();
 		drawManager.requestNextFrameListener(screenshotImage ->
 		{
@@ -471,9 +515,9 @@ public class DiscordRecruitmentPlugin extends Plugin
 		String jsonStr = json.toString();
 
 		List<Throwable> exceptions = new ArrayList<>();
-		ApiTool apiTool = new ApiTool();
+		;
 		List<CompletableFuture<Void>> sends = webhookUrls.stream()
-			.map(url -> apiTool.postRaw(url, jsonStr, "application/json").handle((_v, e) ->
+			.map(url -> this.apiTool.postRaw(url, jsonStr, "application/json").handle((_v, e) ->
 			{
 				if (e != null)
 				{
@@ -498,7 +542,7 @@ public class DiscordRecruitmentPlugin extends Plugin
 		});
 	}
 
-	private void sendScreenshot(List<String> webhookUrls, java.awt.Image screenshot)
+	private void sendScreenshot(java.awt.Image screenshot)
 	{
 		try
 		{
@@ -506,11 +550,10 @@ public class DiscordRecruitmentPlugin extends Plugin
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write((BufferedImage) screenshot, "png", baos);
 			byte[] imageBytes = baos.toByteArray();
-			ApiTool apiTool = new ApiTool();
-			for (String url : webhookUrls)
-			{
-				apiTool.postFormImage(url, imageBytes, "image/png").get();
-			}
+//			ApiTool apiTool = ApiTool.getInstance();
+
+			this.apiTool.postFormImage(config.webhookUrl(), imageBytes, "image/png").get();
+
 
 		}
 		catch (Exception e)

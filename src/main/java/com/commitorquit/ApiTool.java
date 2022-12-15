@@ -47,18 +47,23 @@ public class ApiTool
 	private OkHttpClient httpClient;
 
 
-	public ApiTool()
+	public ApiTool(OkHttpClient httpClient)
 	{
+		this.httpClient = httpClient;
 	}
 
-	public static ApiTool getInstance()
-	{
-		if (_instance == null)
-		{
-			_instance = new ApiTool();
-		}
-		return _instance;
-	}
+
+//	public static ApiTool getInstance()
+//	{
+//		if (_instance == null)
+//		{
+//			_instance = new ApiTool();
+//			_instance.httpClient = new OkHttpClient.Builder()
+//				.cache(new Cache(new File(RuneLite.CACHE_DIR, "okhttp_drdn"), 20 * 1024 * 1024)) // 20mb cache
+//				.build();
+//		}
+//		return _instance;
+//	}
 
 
 	public String getIconUrl(int id)

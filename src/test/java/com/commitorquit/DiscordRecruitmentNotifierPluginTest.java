@@ -3,7 +3,7 @@ package com.commitorquit;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
-public class DiscordRareDropNotificaterPluginTest
+public class DiscordRecruitmentNotifierPluginTest
 {
 	public static void main(String[] args) throws Exception
 	{
