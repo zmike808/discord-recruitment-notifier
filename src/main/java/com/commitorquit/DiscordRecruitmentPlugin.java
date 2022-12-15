@@ -32,18 +32,6 @@ import com.commitorquit.discord.Embed;
 import com.commitorquit.discord.Field;
 import com.commitorquit.discord.Webhook;
 import com.google.inject.Provides;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
-import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -58,6 +46,17 @@ import net.runelite.client.ui.DrawManager;
 import net.runelite.client.util.Text;
 import okhttp3.OkHttpClient;
 import org.json.JSONObject;
+
+import javax.imageio.ImageIO;
+import javax.inject.Inject;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Slf4j
 @PluginDescriptor(
@@ -421,14 +420,14 @@ public class DiscordRecruitmentPlugin extends Plugin
 		invited.setName("Invited/Joined");
 		invited.setValue(invited_name);
 		invited.setInline(false);
-		Field date = new Field();
-		date.setName("Date");
-		date.setInline(true);
-		DateTimeFormatter dtf = DateTimeFormatter.RFC_1123_DATE_TIME;
-		Instant t = Instant.now();
-		date.setValue(dtf.format(t));
+//		Field date = new Field();
+//		date.setName("Date");
+//		date.setInline(true);
+//		DateTimeFormatter dtf = DateTimeFormatter.RFC_1123_DATE_TIME;
+//		Instant t = Instant.now();
+//		date.setValue(dtf.format(t));
 
-		embed.setFields(new Field[]{recruiter, invited, date});
+		embed.setFields(new Field[]{recruiter, invited});
 		embed.setDescription(msg);
 		/*
 		 * Image thumbnail = new Image(); CompletableFuture<Void> iconFuture =
